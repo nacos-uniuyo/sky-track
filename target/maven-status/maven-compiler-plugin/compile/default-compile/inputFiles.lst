@@ -1,0 +1,12 @@
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/SkywatchWeatherApplication.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/config/SecurityConfig.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/controller/AuthController.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/controller/HomeController.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/controller/SavedLocationController.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/dto/SignupRequest.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/model/AppUser.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/model/SavedLocation.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/repository/AppUserRepository.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/repository/SavedLocationRepository.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/service/AppUserDetailsService.java
+/home/favour/workspace/skywatch/src/main/java/com/skywatch/weather/service/SignupService.java

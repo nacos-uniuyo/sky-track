@@ -1,0 +1,10 @@
+com/skywatch/weather/config/SecurityConfig.class
+com/skywatch/weather/controller/HomeController.class
+com/skywatch/weather/repository/SavedLocationRepository.class
+com/skywatch/weather/model/SavedLocation.class
+com/skywatch/weather/service/SignupService$EmailAlreadyRegisteredException.class
+com/skywatch/weather/controller/SavedLocationController.class
+com/skywatch/weather/service/SignupService.class
+com/skywatch/weather/service/AppUserDetailsService.class
+com/skywatch/weather/SkywatchWeatherApplication.class
+com/skywatch/weather/controller/AuthController.class
