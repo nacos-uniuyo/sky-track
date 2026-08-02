@@ -38,7 +38,7 @@ Every template and fragment in `sky-track-web/src/main/resources/templates/`, wi
 ```html
 <header th:fragment="topbar(greeting)" class="topbar glass">
     <div>
-        <p class="greeting" th:text="${greeting}">Hi comrade, Good morning</p>
+        <p class="greeting" th:text="${greeting}">Hi Comrade, Good morning</p>
     </div>
     <div class="topbar-right">
         <span id="live-clock" class="live-clock"></span>
