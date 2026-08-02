@@ -1,46 +1,39 @@
-# Skytrack Weather
+# Sky Track
 
-Java 21 + Spring Boot 3 weather web app using PostgreSQL, Flyway, JPA, Validation, Spring Security, and temporary Thymeleaf pages.
+Java 21 + Spring Boot 3.3.5 weather tracking app using PostgreSQL, Flyway, JPA, Spring Security, and Thymeleaf. A glassmorphism dashboard with a liquid animated background that adapts to time of day.
 
-## 1. Install Maven
+## Features
 
-Java 21 is already required. Install Maven if you do not have it:
+- Signup / login with BCrypt password hashing (email login)
+- Onboarding: choose a primary city, add tracked cities to a favorites carousel
+- Live current conditions, hourly and 7-day forecasts from OpenWeatherMap
+- Weather delta tracking ("Shift since last check") via scheduled snapshots
+- Historical playback chart with hover scrubber
+- Severe weather anomaly alerts (pressure drop, wind surge) with acknowledge
+- Travel weather corridor: weather timeline between origin and destination
+- Time-of-day themes and liquid background per DESIGN.md
+- REST API for cities, weather, delta, snapshots, and alerts
 
-```bash
-sudo apt update
-sudo apt install maven
-```
-
-Check it:
-
-```bash
-mvn -version
-```
-
-## 2. Start Local PostgreSQL
-
-On Ubuntu/Linux:
+## Quick Start (Docker)
 
 ```bash
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
+cp .env.example .env
+docker compose up --build
 ```
 
-Check that Postgres is accepting connections:
+The app will be available at http://localhost:8080.
 
-```bash
-pg_isready
-```
+The command starts a PostgreSQL 16 database and the Spring Boot application. Flyway runs migrations automatically on first startup. Set your OpenWeatherMap API key in `.env` before starting.
 
-## 3. Create The App Database And User
+## Local Development (without Docker)
 
-Open the Postgres shell as the `postgres` admin user:
+### Prerequisites
 
-```bash
-sudo -u postgres psql
-```
+- Java 21
+- Maven 3.9+
+- PostgreSQL 16 (running locally)
 
-Run these SQL commands:
+### Setup
 
 ```sql
 CREATE DATABASE skytrack;
@@ -50,84 +43,48 @@ GRANT ALL PRIVILEGES ON DATABASE skytrack TO skytrack_user;
 GRANT ALL ON SCHEMA public TO skytrack_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO skytrack_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO skytrack_user;
-\q
 ```
 
-Test the connection:
+### Run
 
 ```bash
-psql -h localhost -U skytrack_user -d skytrack
-```
-
-Enter `skywatch99` when prompted.
-
-## 4. Configure The App
-
-The app already has local defaults in `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/skytrack
-spring.datasource.username=skytrack_user
-spring.datasource.password=skywatch99
-```
-
-For real development, prefer environment variables so passwords do not live in code:
-
-```bash
+mvn install -DskipTests -pl sky-track-core -am
 export DB_URL=jdbc:postgresql://localhost:5432/skytrack
 export DB_USERNAME=skytrack_user
 export DB_PASSWORD=skywatch99
 export OPENWEATHER_API_KEY=your_openweathermap_api_key
+mvn spring-boot:run -pl sky-track-web
 ```
 
-## 5. Run The App
-
-```bash
-mvn spring-boot:run
-```
-
-When the app starts, Flyway automatically runs:
-
-```text
-src/main/resources/db/migration/V1__create_saved_locations.sql
-src/main/resources/db/migration/V2__create_app_users.sql
-```
-
-Then open:
-
-```text
-http://localhost:8080
-```
+Run `mvn install -pl sky-track-core` first whenever core code changes; `spring-boot:run` resolves the core module from the local Maven repository.
 
 ## Project Layout
 
-```text
-src/main/java/com/skywatch/weather
-  controller/      Web endpoints
-  dto/             Form request objects
-  model/           JPA entities
-  repository/      Spring Data repositories
-  service/         Business logic, weather API calls later
-
-src/main/resources
-  db/migration/    Flyway SQL migrations
-  templates/       Temporary Thymeleaf frontend
-  static/          CSS/assets
 ```
-
-## Notes For The Frontend Developer
-
-The current Thymeleaf page is only a placeholder:
-
-```text
-src/main/resources/templates/index.html
+sky-track/                          parent POM (dependency management)
+├── sky-track-core/                 domain logic (model, repository, service, dto)
+│   └── src/main/java/com/skywatch/weather/
+│       ├── model/                  JPA entities
+│       ├── repository/             Spring Data repositories
+│       ├── service/                business logic
+│       └── dto/                    request/response objects
+├── sky-track-web/                  web layer (controllers, config, templates)
+│   ├── src/main/java/com/skywatch/weather/
+│   │   ├── controller/             web endpoints
+│   │   ├── config/                 security configuration
+│   │   └── SkywatchWeatherApplication.java
+│   └── src/main/resources/
+│       ├── application.yml         base configuration
+│       ├── application-prod.yml    production profile
+│       ├── db/migration/           Flyway SQL migrations
+│       ├── static/                 CSS and assets
+│       └── templates/              Thymeleaf views
+├── Dockerfile                      production image
+├── docker-compose.yml              database + application services
+└── .env.example                    environment variable template
 ```
-
-They can replace that file and add more templates/static assets without changing the backend/database setup.
 
 ## Authentication
-
-The app has database-backed signup and login:
 
 ```text
 /signup
@@ -135,4 +92,11 @@ The app has database-backed signup and login:
 /logout
 ```
 
-Passwords are hashed with BCrypt before being stored in the `app_users` table.
+Passwords are hashed with BCrypt. Form login uses `email` as the username parameter.
+
+## Configuration
+
+| Profile | Description |
+|---------|-------------|
+| default | Local PostgreSQL, used with `mvn spring-boot:run` |
+| `prod` | Production settings, used in Docker Compose |

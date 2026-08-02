@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: sky-track
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/skytrack}
+    username: ${DB_USERNAME:skytrack_user}
+    password: ${DB_PASSWORD:skywatch99}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+weather:
+  api:
+    base-url: https://api.openweathermap.org
+    key: ${OPENWEATHER_API_KEY:}
+  snapshot:
+    fixed-rate-ms: ${SNAPSHOT_FIXED_RATE_MS:1800000}

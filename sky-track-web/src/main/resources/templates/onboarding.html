@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Choose Your City | Sky Track')}"></head>
+<body th:class="${themeClass}">
+<canvas id="liquid-canvas"></canvas>
+
+<main class="page">
+    <section class="glass auth-panel">
+        <p class="greeting" th:text="${greeting}">Hi comrade, Good morning</p>
+        <h1 class="auth-title">Choose your primary city</h1>
+        <p class="condition">Search for a city to track. You can add more cities later.</p>
+
+        <form method="post" th:action="@{/onboarding/search}" class="auth-form">
+            <label>
+                City
+                <input type="text" name="query" class="glass-input" required maxlength="120"
+                       placeholder="Search for a city" th:value="${query}">
+            </label>
+            <button type="submit" class="glass-button">Search</button>
+        </form>
+
+        <ul th:if="${!results.isEmpty()}" class="search-results">
+            <li th:each="city : ${results}" class="glass-card search-result">
+                <span th:text="${city.name}">Lagos</span>
+                <span th:if="${city.country}" th:text="' (' + ${city.country} + ')'">(NG)</span>
+                <form method="post" th:action="@{/onboarding/select}">
+                    <input type="hidden" name="cityName" th:value="${city.name}">
+                    <input type="hidden" name="country" th:value="${city.country}">
+                    <input type="hidden" name="countryCode" th:value="${city.country}">
+                    <input type="hidden" name="latitude" th:value="${city.lat}">
+                    <input type="hidden" name="longitude" th:value="${city.lon}">
+                    <button type="submit" class="glass-button">Select</button>
+                </form>
+            </li>
+        </ul>
+
+        <p class="auth-link"><a th:href="@{/}">Skip for now</a></p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.git
+.agents
+*.md
+.gitignore
+.env
+.env.example
+docker-compose*.yml
+.idea
+.vscode
+target
+**/target

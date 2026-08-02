@@ -1,0 +1,45 @@
+:root {
+    --color-primary: #FF7E00;
+    --color-secondary: #FFD700;
+    --color-accent: #4A90E2;
+    --color-surface: rgba(255, 255, 255, 0.12);
+    --color-surface-border: rgba(255, 255, 255, 0.18);
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: rgba(255, 255, 255, 0.72);
+    --glass-blur: 20px;
+    --glass-radius: 16px;
+    --font-metrics: 'Inter', 'Plus Jakarta Sans', sans-serif;
+    --font-script: 'Playfair Display', 'Cormorant Garamond', serif;
+}
+
+.theme-morning {
+    --color-primary: #FF7E00;
+    --color-secondary: #FFD700;
+    --color-accent: #4A90E2;
+    --color-background-start: #0D1B2A;
+    --color-background-end: #1B2838;
+}
+
+.theme-afternoon {
+    --color-primary: #1E88E5;
+    --color-secondary: #FFC107;
+    --color-accent: #FFFFFF;
+    --color-background-start: #1565C0;
+    --color-background-end: #42A5F5;
+}
+
+.theme-evening {
+    --color-primary: #D35400;
+    --color-secondary: #8E44AD;
+    --color-accent: #2C3E50;
+    --color-background-start: #1A0A2E;
+    --color-background-end: #3D1E6D;
+}
+
+.theme-night {
+    --color-primary: #0B0F19;
+    --color-secondary: #1B263B;
+    --color-accent: #E0E6ED;
+    --color-background-start: #060B14;
+    --color-background-end: #0D1520;
+}

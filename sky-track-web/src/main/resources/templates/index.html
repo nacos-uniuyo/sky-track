@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Sky Track')}"></head>
+<body th:class="${themeClass}">
+<canvas id="liquid-canvas"></canvas>
+
+<main class="page">
+    <div th:replace="~{fragments/topbar :: topbar(${greeting})}"></div>
+
+    <section th:if="${primaryCityView}" id="hero" class="hero glass">
+        <p class="city-message" th:if="${cityMessage}" th:text="${cityMessage}">Skies are calm.</p>
+        <div id="hero-icon" class="hero-icon" data-weather-icon="${primaryCityView.conditionCode}"></div>
+        <h2 id="hero-city" class="city-name" th:text="${primaryCityView.cityName}">Lagos</h2>
+        <p id="hero-temp" class="hero-temp" th:text="${primaryCityView.temperature} != null ? ${primaryCityView.temperature} + ' C' : '--'">28 C</p>
+        <p id="hero-condition" class="condition" th:text="${primaryCityView.conditionText}">clear sky</p>
+        <span id="hero-delta"
+              class="delta-badge"
+              th:if="${primaryCityView.temperatureDelta != null}"
+              th:classappend="${primaryCityView.temperatureDelta >= 0} ? 'up' : 'down'"
+              th:text="'Shift ' + (${primaryCityView.temperatureDelta >= 0} ? '+' : '') + ${primaryCityView.temperatureDelta} + ' C'">Shift +1.2 C</span>
+        <div class="hero-meta">
+            <span id="hero-high" th:if="${primaryCityView.tempMax} != null" th:text="'H ' + ${primaryCityView.tempMax}">H 30</span>
+            <span id="hero-low" th:if="${primaryCityView.tempMin} != null" th:text="'L ' + ${primaryCityView.tempMin}">L 26</span>
+            <span id="hero-feels" th:if="${primaryCityView.feelsLike} != null" th:text="'Feels like ' + ${primaryCityView.feelsLike}">Feels like 29</span>
+        </div>
+        <div class="metric-grid">
+            <div class="metric" th:if="${primaryCityView.humidity} != null">
+                <span class="metric-label">Humidity</span>
+                <span id="hero-humidity" class="metric-value" th:text="${primaryCityView.humidity} + '%'">68%</span>
+            </div>
+            <div class="metric" th:if="${primaryCityView.windSpeed} != null">
+                <span class="metric-label">Wind</span>
+                <span id="hero-wind" class="metric-value" th:text="${primaryCityView.windSpeed} + ' m/s'">3.6 m/s</span>
+            </div>
+            <div class="metric" th:if="${primaryCityView.pressure} != null">
+                <span class="metric-label">Pressure</span>
+                <span id="hero-pressure" class="metric-value" th:text="${primaryCityView.pressure} + ' hPa'">1012 hPa</span>
+            </div>
+        </div>
+    </section>
+
+    <section th:if="${primaryCityView == null}" id="hero" class="hero glass">
+        <h2 class="city-name">Welcome to Sky Track</h2>
+        <p class="condition">Choose your primary city to start tracking the weather.</p>
+        <a th:href="@{/onboarding}" class="glass-button" style="display:inline-block; margin-top:12px;">Choose primary city</a>
+    </section>
+
+    <section th:if="${!cities.isEmpty()}" class="city-section">
+        <h3 class="section-title">Tracked cities</h3>
+        <div class="carousel">
+            <article th:each="city : ${cities}"
+                     class="glass-card city-card"
+                     th:data-name="${city.cityName}"
+                     th:data-temp="${city.temperature}"
+                     th:data-condition="${city.conditionText}"
+                     th:data-icon="${city.conditionCode}"
+                     th:data-high="${city.tempMax}"
+                     th:data-low="${city.tempMin}"
+                     th:data-feels="${city.feelsLike}"
+                     th:data-humidity="${city.humidity}"
+                     th:data-wind="${city.windSpeed}"
+                     th:data-pressure="${city.pressure}"
+                     th:data-delta="${city.temperatureDelta}"
+                     th:classappend="${city.primaryCity} ? ' active'">
+                <span class="badge" th:if="${city.primaryCity}">Primary</span>
+                <div class="city-icon" data-weather-icon="${city.conditionCode}"></div>
+                <h4 class="city-name" th:text="${city.cityName}">Lagos</h4>
+                <span class="country-tag" th:if="${city.countryCode}" th:text="${city.countryCode}">NG</span>
+                <p class="city-temp" th:text="${city.temperature} != null ? ${city.temperature} + ' C' : '--'">28 C</p>
+                <span class="delta-badge"
+                      th:if="${city.temperatureDelta != null}"
+                      th:classappend="${city.temperatureDelta >= 0} ? 'up' : 'down'"
+                      th:text="((${city.temperatureDelta >= 0} ? '+' : '')) + ${city.temperatureDelta} + ' C'">+1.2 C</span>
+                <div class="card-actions">
+                    <form th:unless="${city.primaryCity}" method="post" th:action="@{/cities/{id}/primary(id=${city.id})}">
+                        <button type="submit" class="glass-button">Set primary</button>
+                    </form>
+                    <form method="post" th:action="@{/cities/{id}/remove(id=${city.id})}">
+                        <button type="submit" class="glass-button danger">Remove</button>
+                    </form>
+                </div>
+            </article>
+
+            <a href="#search" class="glass-card add-card">+ Add city</a>
+        </div>
+    </section>
+
+    <section th:if="${forecast != null && !forecast.hourly.isEmpty()}" class="forecast-section">
+        <h3 class="section-title">Hourly forecast</h3>
+        <div class="hourly-scroll">
+            <article th:each="hour : ${forecast.hourly}" class="glass-card hourly-card">
+                <span class="hourly-time" th:text="${hour.time}">14:00</span>
+                <div class="hourly-icon" th:attr="data-weather-icon=${hour.conditionCode}"></div>
+                <span class="hourly-temp" th:text="${hour.temperature} != null ? ${hour.temperature} + ' C' : '--'">28 C</span>
+            </article>
+        </div>
+    </section>
+
+    <section th:if="${forecast != null && !forecast.daily.isEmpty()}" class="forecast-section">
+        <h3 class="section-title">7-day forecast</h3>
+        <div class="daily-list">
+            <article th:each="day : ${forecast.daily}" class="glass-card daily-row">
+                <span class="daily-day" th:text="${day.day}">MONDAY</span>
+                <div class="daily-icon" th:attr="data-weather-icon=${day.conditionCode}"></div>
+                <span class="daily-pop" th:if="${day.precipitation != null}" th:text="${day.precipitation} != 0 ? (${day.precipitation} * 100) + '%' : ''">20%</span>
+                <span class="daily-temps">
+                    <span class="daily-max" th:text="${day.tempMax} + ' C'">30 C</span>
+                    <span class="daily-min" th:text="${day.tempMin} + ' C'">26 C</span>
+                </span>
+            </article>
+        </div>
+    </section>
+
+    <section th:if="${!history.isEmpty()}" class="forecast-section">
+        <h3 class="section-title">Historical playback</h3>
+        <div class="glass chart-panel">
+            <canvas id="history-chart" class="history-canvas" th:attr="data-city-id=${primaryCityView.id}"></canvas>
+        </div>
+    </section>
+
+    <section id="search" class="search-panel glass">
+        <h3 class="section-title">Track a city</h3>
+        <form method="get" th:action="@{/}" class="search-form">
+            <input type="text" name="q" class="glass-input" required maxlength="120"
+                   placeholder="Search for a city" th:value="${searchQuery}">
+            <button type="submit" class="glass-button">Search</button>
+        </form>
+
+        <ul th:if="${searchResults != null && !searchResults.isEmpty()}" class="search-results">
+            <li th:each="city : ${searchResults}" class="glass-card search-result">
+                <span th:text="${city.name}">Lagos</span>
+                <span th:if="${city.country}" th:text="' (' + ${city.country} + ')'">(NG)</span>
+                <form method="post" th:action="@{/cities}">
+                    <input type="hidden" name="cityName" th:value="${city.name}">
+                    <input type="hidden" name="country" th:value="${city.country}">
+                    <input type="hidden" name="countryCode" th:value="${city.country}">
+                    <input type="hidden" name="latitude" th:value="${city.lat}">
+                    <input type="hidden" name="longitude" th:value="${city.lon}">
+                    <button type="submit" class="glass-button">Track</button>
+                </form>
+            </li>
+        </ul>
+    </section>
+</main>
+
+<script th:src="@{/js/weather-icons.js}" defer></script>
+<script th:src="@{/js/dashboard.js}" defer></script>
+<script th:src="@{/js/history-chart.js}" defer></script>
+</body>
+</html>

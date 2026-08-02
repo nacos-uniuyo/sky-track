@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Travel Corridor | Sky Track')}"></head>
+<body th:class="${themeClass}">
+<canvas id="liquid-canvas"></canvas>
+
+<main class="page">
+    <div th:replace="~{fragments/topbar :: topbar(${greeting})}"></div>
+
+    <section class="glass search-panel">
+        <h3 class="section-title">Travel weather corridor</h3>
+        <form method="post" th:action="@{/corridor}" class="search-form">
+            <input type="text" name="origin" class="glass-input" required maxlength="120"
+                   placeholder="Origin city" th:value="${originQuery}">
+            <input type="text" name="destination" class="glass-input" required maxlength="120"
+                   placeholder="Destination city" th:value="${destinationQuery}">
+            <button type="submit" class="glass-button">Generate</button>
+        </form>
+    </section>
+
+    <section th:if="${corridor != null && !corridor.points.isEmpty()}" class="glass search-panel">
+        <h3 class="section-title" th:text="${corridor.origin} + ' to ' + ${corridor.destination}">Lagos to London</h3>
+        <div class="corridor-timeline">
+            <article th:each="point : ${corridor.points}" class="glass-card corridor-point">
+                <div class="corridor-icon" th:attr="data-weather-icon=${point.conditionCode}"></div>
+                <div class="corridor-info">
+                    <span class="corridor-label" th:text="${point.label}">Stop 1</span>
+                    <span class="corridor-temp" th:text="${point.temperature} != null ? ${point.temperature} + ' C' : '--'">28 C</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section th:if="${corridor != null && corridor.points.isEmpty()}" class="glass search-panel">
+        <p class="condition">Could not find both cities. Try full names like "Lagos, NG" and "London, GB".</p>
+    </section>
+</main>
+
+<script th:src="@{/js/weather-icons.js}" defer></script>
+</body>
+</html>
