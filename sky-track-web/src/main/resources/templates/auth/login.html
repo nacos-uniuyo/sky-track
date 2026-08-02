@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Login | Sky Track')}"></head>
+<body th:class="${themeClass}">
+<canvas id="liquid-canvas"></canvas>
+
+<main class="page">
+    <section class="glass auth-panel">
+        <h1 class="auth-title">Welcome back</h1>
+        <p th:if="${param.registered}" class="success">Account created. You can log in now.</p>
+        <p th:if="${param.error}" class="error">Invalid email or password.</p>
+        <p th:if="${param.logout}" class="success">You have been logged out.</p>
+
+        <form method="post" th:action="@{/login}" class="auth-form">
+            <label>
+                Email
+                <input type="email" name="email" class="glass-input" required autocomplete="email">
+            </label>
+            <label>
+                Password
+                <input type="password" name="password" class="glass-input" required autocomplete="current-password">
+            </label>
+            <button type="submit" class="glass-button">Log in</button>
+        </form>
+
+        <p class="auth-link">Need an account? <a th:href="@{/signup}">Sign up</a></p>
+    </section>
+</main>
+</body>
+</html>

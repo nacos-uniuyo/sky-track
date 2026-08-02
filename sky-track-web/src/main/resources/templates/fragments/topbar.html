@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="topbar(greeting)" class="topbar glass">
+    <div>
+        <p class="greeting" th:text="${greeting}">Hi comrade, Good morning</p>
+    </div>
+    <div class="topbar-right">
+        <span id="live-clock" class="live-clock"></span>
+        <a th:href="@{/alerts}" class="bell-link glass-button" title="Alerts">Alerts</a>
+        <form method="post" th:action="@{/logout}">
+            <button type="submit" class="glass-button">Log out</button>
+        </form>
+    </div>
+    <script th:src="@{/js/clock.js}" defer></script>
+</header>
+</body>
+</html>

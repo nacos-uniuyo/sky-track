@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Alerts | Sky Track')}"></head>
+<body th:class="${themeClass}">
+<canvas id="liquid-canvas"></canvas>
+
+<main class="page">
+    <div th:replace="~{fragments/topbar :: topbar(${greeting})}"></div>
+
+    <section class="glass search-panel">
+        <h3 class="section-title">Weather alerts</h3>
+        <div th:if="${alerts.isEmpty()}" class="condition">No active alerts for your tracked cities.</div>
+        <ul class="alert-list">
+            <li th:each="alert : ${alerts}" class="glass-card alert-item">
+                <div>
+                    <span class="badge" th:text="${alert.severity}">HIGH</span>
+                    <span class="alert-type" th:text="${alert.alertType}">PRESSURE_DROP</span>
+                    <h4 th:text="${alert.title}">Rapid pressure drop</h4>
+                    <p th:text="${alert.description}">Pressure fell 6 hPa for Lagos</p>
+                    <span class="alert-time" th:text="${alert.detectedAt}">2026-08-02 05:00</span>
+                </div>
+                <form th:unless="${alert.acknowledged}" method="post" th:action="@{/alerts/{id}/acknowledge(id=${alert.id})}">
+                    <button type="submit" class="glass-button">Acknowledge</button>
+                </form>
+                <span th:if="${alert.acknowledged}" class="acknowledged">Acknowledged</span>
+            </li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>
