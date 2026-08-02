@@ -30,7 +30,6 @@ target/
 # --- IDE files (personal, machine-specific) ---
 .idea/
 *.iml
-.vscode/
 
 # --- OS junk ---
 .DS_Store
@@ -42,3 +41,6 @@ Thumbs.db
 # --- Logs ---
 logs/
 *.log
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
