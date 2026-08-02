@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Sign Up | Sky Track')}"></head>
+<body th:class="${themeClass}">
+<canvas id="liquid-canvas"></canvas>
+
+<main class="page">
+    <section class="glass auth-panel">
+        <h1 class="auth-title">Create account</h1>
+
+        <form method="post" th:action="@{/signup}" th:object="${signupRequest}" class="auth-form">
+            <label>
+                First name
+                <input th:field="*{firstName}" class="glass-input" required maxlength="60" autocomplete="given-name">
+                <span class="error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            </label>
+            <label>
+                Last name
+                <input th:field="*{lastName}" class="glass-input" required maxlength="60" autocomplete="family-name">
+                <span class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+            </label>
+            <label>
+                Email
+                <input type="email" th:field="*{email}" class="glass-input" required maxlength="180" autocomplete="email">
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </label>
+            <label>
+                Password
+                <input type="password" th:field="*{password}" class="glass-input" required minlength="8" maxlength="72" autocomplete="new-password">
+                <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            </label>
+            <button type="submit" class="glass-button">Create account</button>
+        </form>
+
+        <p class="auth-link">Already have an account? <a th:href="@{/login}">Log in</a></p>
+    </section>
+</main>
+</body>
+</html>
